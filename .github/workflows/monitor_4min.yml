@@ -1,0 +1,29 @@
+name: Monitor 4min
+
+on:
+  schedule:
+    - cron: "*/4 * * * *"
+
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: |
+          pip install trio
+          pip install requests
+          pip install samp-query
+
+      - name: Executar monitor
+        run: python main_backup.py
