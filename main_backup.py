@@ -32,7 +32,10 @@ def carregar_mensagens():
         return {
             "online_message_id": None,
             "dia_message_id": None,
-            "semana_message_id": None
+            "dia_message_id_2": None,
+            "semana_message_id": None,
+            "semana_message_id_2": None,
+            "semana_message_id_3": None
         }
 
 
@@ -502,9 +505,13 @@ def atualizar_online(webhook, mensagem):
 
         print("Erro ao editar mensagem ONLINE:", resposta.text)
 
-def atualizar_dia(webhook, mensagem):
+def atualizar_dia(webhook, mensagem1, mensagem2=None):
 
     dados = carregar_mensagens()
+
+    #
+    # PRIMEIRA MENSAGEM
+    #
 
     message_id = dados.get("dia_message_id")
 
@@ -512,47 +519,128 @@ def atualizar_dia(webhook, mensagem):
 
         resposta = requests.post(
             webhook + "?wait=true",
-            json={"content": mensagem}
+            json={"content": mensagem1}
         )
 
         if resposta.status_code in (200, 201):
 
-            dados["dia_message_id"] = resposta.json()["id"]
+            dados["dia_message_id"] = (
+                resposta.json()["id"]
+            )
+
             salvar_mensagens(dados)
 
-            print("Mensagem DIA criada.")
+            print("Mensagem dia #1 criada.")
 
         else:
 
-            print("Erro ao criar mensagem DIA:", resposta.text)
+            print(
+                "Erro ao criar mensagem dia #1:",
+                resposta.text
+            )
 
-        return
+    else:
 
-    webhook_base = webhook.split("/webhooks/")[1]
+        webhook_base = webhook.split(
+            "/webhooks/"
+        )[1]
 
-    partes = webhook_base.split("/")
+        partes = webhook_base.split("/")
 
-    webhook_id = partes[0]
-    webhook_token = partes[1]
+        webhook_id = partes[0]
+        webhook_token = partes[1]
 
-    url = (
-        f"https://discord.com/api/webhooks/"
-        f"{webhook_id}/{webhook_token}"
-        f"/messages/{message_id}"
-    )
+        url = (
+            f"https://discord.com/api/webhooks/"
+            f"{webhook_id}/{webhook_token}"
+            f"/messages/{message_id}"
+        )
 
-    resposta = requests.patch(
-        url,
-        json={"content": mensagem}
-    )
+        resposta = requests.patch(
+            url,
+            json={"content": mensagem1}
+        )
 
-    if resposta.status_code != 200:
+        if resposta.status_code != 200:
 
-        print("Erro ao editar mensagem DIA:", resposta.text)
+            print(
+                "Erro ao editar mensagem dia #1:",
+                resposta.text
+            )
 
-def atualizar_semana(webhook, mensagem):
+    #
+    # SEGUNDA MENSAGEM
+    #
+
+    if mensagem2:
+
+        message_id_2 = dados.get(
+            "dia_message_id_2"
+        )
+
+        if not message_id_2:
+
+            resposta = requests.post(
+                webhook + "?wait=true",
+                json={"content": mensagem2}
+            )
+
+            if resposta.status_code in (200, 201):
+
+                dados["dia_message_id_2"] = (
+                    resposta.json()["id"]
+                )
+
+                salvar_mensagens(dados)
+
+                print(
+                    "Mensagem dia #2 criada."
+                )
+
+            else:
+
+                print(
+                    "Erro ao criar mensagem dia #2:",
+                    resposta.text
+                )
+
+        else:
+
+            webhook_base = webhook.split(
+                "/webhooks/"
+            )[1]
+
+            partes = webhook_base.split("/")
+
+            webhook_id = partes[0]
+            webhook_token = partes[1]
+
+            url = (
+                f"https://discord.com/api/webhooks/"
+                f"{webhook_id}/{webhook_token}"
+                f"/messages/{message_id_2}"
+            )
+
+            resposta = requests.patch(
+                url,
+                json={"content": mensagem2}
+            )
+
+            if resposta.status_code != 200:
+
+                print(
+                    "Erro ao editar mensagem dia #2:",
+                    resposta.text
+                )
+
+
+def atualizar_semana(webhook, mensagem1, mensagem2, mensagem3=None):
 
     dados = carregar_mensagens()
+
+    #
+    # PRIMEIRA MENSAGEM
+    #
 
     message_id = dados.get("semana_message_id")
 
@@ -560,43 +648,184 @@ def atualizar_semana(webhook, mensagem):
 
         resposta = requests.post(
             webhook + "?wait=true",
-            json={"content": mensagem}
+            json={"content": mensagem1}
         )
 
         if resposta.status_code in (200, 201):
 
-            dados["semana_message_id"] = resposta.json()["id"]
+            dados["semana_message_id"] = (
+                resposta.json()["id"]
+            )
+
             salvar_mensagens(dados)
 
-            print("Mensagem SEMANA criada.")
+            print("Mensagem SEMANA #1 criada.")
 
         else:
 
-            print("Erro ao criar mensagem SEMANA:", resposta.text)
+            print(
+                "Erro ao criar mensagem SEMANA #1:",
+                resposta.text
+            )
 
-        return
+    else:
 
-    webhook_base = webhook.split("/webhooks/")[1]
+        webhook_base = webhook.split(
+            "/webhooks/"
+        )[1]
 
-    partes = webhook_base.split("/")
+        partes = webhook_base.split("/")
 
-    webhook_id = partes[0]
-    webhook_token = partes[1]
+        webhook_id = partes[0]
+        webhook_token = partes[1]
 
-    url = (
-        f"https://discord.com/api/webhooks/"
-        f"{webhook_id}/{webhook_token}"
-        f"/messages/{message_id}"
-    )
+        url = (
+            f"https://discord.com/api/webhooks/"
+            f"{webhook_id}/{webhook_token}"
+            f"/messages/{message_id}"
+        )
 
-    resposta = requests.patch(
-        url,
-        json={"content": mensagem}
-    )
+        resposta = requests.patch(
+            url,
+            json={"content": mensagem1}
+        )
 
-    if resposta.status_code != 200:
+        if resposta.status_code != 200:
 
-        print("Erro ao editar mensagem SEMANA:", resposta.text)
+            print(
+                "Erro ao editar mensagem SEMANA #1:",
+                resposta.text
+            )
+
+    #
+    # SEGUNDA MENSAGEM
+    #
+
+    if mensagem2:
+
+        message_id_2 = dados.get(
+            "semana_message_id_2"
+        )
+
+        if not message_id_2:
+
+            resposta = requests.post(
+                webhook + "?wait=true",
+                json={"content": mensagem2}
+            )
+
+            if resposta.status_code in (200, 201):
+
+                dados["semana_message_id_2"] = (
+                    resposta.json()["id"]
+                )
+
+                salvar_mensagens(dados)
+
+                print(
+                    "Mensagem SEMANA #2 criada."
+                )
+
+            else:
+
+                print(
+                    "Erro ao criar mensagem SEMANA #2:",
+                    resposta.text
+                )
+
+        else:
+
+            webhook_base = webhook.split(
+                "/webhooks/"
+            )[1]
+
+            partes = webhook_base.split("/")
+
+            webhook_id = partes[0]
+            webhook_token = partes[1]
+
+            url = (
+                f"https://discord.com/api/webhooks/"
+                f"{webhook_id}/{webhook_token}"
+                f"/messages/{message_id_2}"
+            )
+
+            resposta = requests.patch(
+                url,
+                json={"content": mensagem2}
+            )
+
+            if resposta.status_code != 200:
+
+                print(
+                    "Erro ao editar mensagem SEMANA #2:",
+                    resposta.text
+                )
+
+    #
+    # TERCCEIRA MENSAGEM
+    #
+
+    if mensagem3:
+
+        message_id_3 = dados.get(
+            "semana_message_id_3"
+        )
+
+        if not message_id_3:
+
+            resposta = requests.post(
+                webhook + "?wait=true",
+                json={"content": mensagem3}
+            )
+
+            if resposta.status_code in (200, 201):
+
+                dados["semana_message_id_3"] = (
+                    resposta.json()["id"]
+                )
+
+                salvar_mensagens(dados)
+
+                print(
+                    "Mensagem SEMANA #3 criada."
+                )
+
+            else:
+
+                print(
+                    "Erro ao criar mensagem SEMANA #3:",
+                    resposta.text
+                )
+
+        else:
+
+            webhook_base = webhook.split(
+                "/webhooks/"
+            )[1]
+
+            partes = webhook_base.split("/")
+
+            webhook_id = partes[0]
+            webhook_token = partes[1]
+
+            url = (
+                f"https://discord.com/api/webhooks/"
+                f"{webhook_id}/{webhook_token}"
+                f"/messages/{message_id_3}"
+            )
+
+            resposta = requests.patch(
+                url,
+                json={"content": mensagem3}
+            )
+
+            if resposta.status_code != 200:
+
+                print(
+                    "Erro ao editar mensagem SEMANA #3:",
+                    resposta.text
+                )
 
 
 async def verificar_players():
@@ -642,6 +871,7 @@ async def verificar_players():
             dados = carregar_mensagens()
 
             dados["dia_message_id"] = None
+            dados["dia_message_id_2"] = None
 
             salvar_mensagens(dados)
 
@@ -661,6 +891,8 @@ async def verificar_players():
             dados = carregar_mensagens()
 
             dados["semana_message_id"] = None
+            dados["semana_message_id_2"] = None
+            dados["semana_message_id_3"] = None
 
             salvar_mensagens(dados)
 
@@ -782,22 +1014,44 @@ async def verificar_players():
             key=lambda x: x[0]
         )
 
-        texto_dia = []
+        texto_dia_1 = []
+        texto_dia_2 = []
 
         for posicao, (_, texto) in enumerate(
             linhas_dia,
             start=1
         ):
 
-            texto_dia.append(
-                f"{posicao}º {texto}"
+            linha = f"{posicao}º {texto}"
+
+            if posicao <= 50:
+
+                texto_dia_1.append(
+                    linha
+                )
+
+            else:
+
+                texto_dia_2.append(
+                    linha
+                )
+
+        mensagem_dia_1 = (
+            f"📅 ATIVOS DO DIA\n"
+            f"Data: {datetime.now().strftime('%d/%m/%Y')}\n"
+            + f"Total ativos: {len(linhas_dia)}\n\n"
+            + "\n".join(texto_dia_1)
+        )
+
+        mensagem_dia_2 = None
+
+        if texto_dia_2:
+
+            mensagem_dia_2 = (
+                f"\n"
+                + "\n".join(texto_dia_2)
             )
 
-        mensagem_dia = (
-            f"📅 ATIVOS {agora().strftime('%d/%m/%Y')}\n\n"
-            + "\n".join(texto_dia)
-            + f"\n\nTotal ativos: {len(texto_dia)}"
-        )
 
         semana_atual = agora().strftime("%G-W%V")
 
@@ -833,23 +1087,54 @@ async def verificar_players():
             key=lambda x: x[0]
         )
 
-        texto_semana = []
+        texto_semana_1 = []
+        texto_semana_2 = []
+        texto_semana_3 = []
 
         for posicao, (_, texto) in enumerate(
             linhas_semana,
             start=1
         ):
 
-            texto_semana.append(
-                f"{posicao}º {texto}"
+            linha = f"{posicao}º {texto}"
+
+            if posicao <= 50:
+
+                texto_semana_1.append(linha)
+
+            elif posicao <= 100:
+
+                texto_semana_2.append(linha)
+
+            else:
+
+                texto_semana_3.append(linha)
+
+        mensagem_semana_1 = (
+            f"📊 ATIVOS DA SEMANA\n"
+            f"Semana: {semana_atual}\n"
+            + f"Total ativos: {len(linhas_semana)}\n\n"
+            + "\n".join(texto_semana_1)
+        )
+
+        mensagem_semana_2 = None
+
+        if texto_semana_2:
+
+            mensagem_semana_2 = (
+                "\n"
+                + "\n".join(texto_semana_2)
             )
 
-        mensagem_semana = (
-            f"📊 ATIVOS DA SEMANA\n"
-            f"Semana: {semana_atual}\n\n"
-            + "\n".join(texto_semana)
-            + f"\n\nTotal ativos: {len(texto_semana)}"
-        )
+        mensagem_semana_3 = None
+
+        if texto_semana_3:
+
+            mensagem_semana_3 = (
+                "\n"
+                + "\n".join(texto_semana_3)
+            )
+
 
         atualizar_online(
             WEBHOOK_ONLINE,
@@ -858,12 +1143,14 @@ async def verificar_players():
 
         atualizar_dia(
             WEBHOOK_DIA,
-            mensagem_dia
+            mensagem_dia_1,
+            mensagem_dia_2
         )
 
-        atualizar_semana(
-            WEBHOOK_SEMANA,
-            mensagem_semana
+        atualizar_dia(
+            WEBHOOK_DIA,
+            mensagem_dia_1,
+            mensagem_dia_2
         )
 
         print(f"\n[{hora_atual}] Atualizado com sucesso.")
