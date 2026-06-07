@@ -26,4 +26,4 @@ jobs:
           pip install samp-query
 
       - name: Executar monitor
-        run: python main_backup.py
+        run: python fmain_backup.py
